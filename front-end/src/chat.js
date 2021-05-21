@@ -243,7 +243,7 @@ let Chat = ({ user }) => {
                         }
                         <div className="create-room">
                             <input type="text" placeholder="Create Room" value={newRoom} onChange={e => setNewRoom(e.target.value)} />
-                            <button onClick={joinRoom}><i class="fas fa-plus-square"></i></button>
+                            <button onClick={joinRoom}><i className="fas fa-plus-square"></i></button>
                         </div>
                         {/* <button onClick={leaveRoom}>Leave Room</button> */}
 

@@ -222,14 +222,6 @@ let Chat = ({ user }) => {
         setNewRoom('');
     }
 
-    //leave room and update current room
-    // const leaveRoom = () => {
-    //     setChat([]);
-    //     setParticipants([]);
-    //     socket.emit('leave', { user: state.user, room: activeRoom });
-    //     setActiveRoom('');
-    // }
-
     //I want to press enter to submit
     const ent = (e) => {
         if (e.key === "Enter") { Data.handleAPICall() }

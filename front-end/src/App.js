@@ -23,11 +23,11 @@ class App extends React.Component {
         <header className="App-header">
           {/* <img src={logo} className="App-logo" alt="logo" /> */}
         </header>
-        <body>
+        <div className="app-wrap"> 
           {!this.props.auth0.isAuthenticated
             ? <Login />
             : <Chat user={this.props.auth0.user.nickname} />}
-        </body>
+        </div>
       </div>
     );
   }

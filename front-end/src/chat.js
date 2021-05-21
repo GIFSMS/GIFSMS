@@ -131,8 +131,8 @@ let Chat = ({ user }) => {
     const gifWindow = (data) => {
         console.log('Gif Window: ', data)
         return data.map(el => (
-            <div className="gif-prev">
-                <img src={el} alt={el} onClick={(e) => clickMe(e)} />
+            <div className="gif-prev" key={`${el}-prev`}>
+                <img src={el} key={el} alt={el} onClick={(e) => clickMe(e)} />
             </div>
 
         ))
@@ -166,8 +166,10 @@ let Chat = ({ user }) => {
                 :
                 <>
                 <div key={index} className={user === state.user ? "my-message" : "message"}>
-                        <img alt={index} src={message} /> <br />
+                    <div>
+                        <img className="chat-gifs" alt={index} src={message} /> <br />
                         <h3>{user}</h3>
+                    </div>
                 </div>
                 <div ref={messagesEndRef} />
                 <br />
@@ -230,6 +232,9 @@ let Chat = ({ user }) => {
 
     return (
         <>
+            <div className="header-sec">
+            <h2>Chat</h2>
+            </div>
             <div className="chat-container">
                 <div className="side-nav">
                     <div className="rooms">
@@ -260,7 +265,9 @@ let Chat = ({ user }) => {
                     </div>
                 </div>
                 <div className="chat">
-                    <h2>Chat</h2>
+                    <div className="chat-header">
+                        
+                    </div>
                     <div className="chatArea">
                         {chatWindow(chat)}
                     </div>
@@ -268,14 +275,14 @@ let Chat = ({ user }) => {
 
                 <div className="searcher">
                     <div className="search-side">
-                        <h2>Go Giff Yourself</h2>
+                        <h2>Show Me Your Moves</h2>
                     </div>
                     <div className="search-gifs">
                         <input placeholder="Giphys" type="text" onChange={(e) => onChang(e)} onKeyDown={(e) => ent(e)} value={state.message} />
-                        <button onClick={Data.handleAPICall}>Giph Me</button>
+                        <button onClick={Data.handleAPICall}>Search</button>
                     </div>
 
-                    <button onClick={gamble}>Giph Me Harder</button>
+                    <button onClick={gamble}>Random</button>
 
 
                     <div className='gifTown'>

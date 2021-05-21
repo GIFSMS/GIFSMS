@@ -18,10 +18,6 @@
 
 .chat-container{
   display: grid; 
-  grid-template-columns: .3fr 1fr .3fr; 
-  grid-template-rows: 1fr; 
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
   min-height: 100vh;
   background-color: slategray;
   overflow:auto;
@@ -42,6 +38,11 @@
 .my-message {
   display: flex;
   justify-content: flex-start;
+}
+
+.chat-gifs{
+  border: 3px solid white;
+  border-radius:3px;
 }
 
 .message, .my-message h2{
@@ -88,7 +89,11 @@
 .chat{
   grid-area: 1 / 2 / 2 / 3;
   height: 100vh;
-  /* background-color: tan; */
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: .2fr 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
 }
 
 .gifTown{
@@ -104,6 +109,8 @@
 
 .gif-prev img {
   cursor: pointer;
+  border: 3px solid white;
+  border-radius: 3px;
 }
 
 
@@ -171,6 +178,18 @@ input[type="text"] {
   cursor: pointer;
   align-self: stretch;
   display: flex;
+}
+
+.chat-header{
+  position: fixed;
+  top: 0;
+  left:30ch;
+  z-index: 1;
+  height:100px;
+  width: 100ch;
+  justify-content: center;
+  display: grid;
+  background-color: slategray;
 }
 
 /* .create-room button i {

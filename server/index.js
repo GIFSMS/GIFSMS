@@ -1,7 +1,10 @@
 'use strict';
 
 const PORT = process.env.PORT || 3001;
-
+const http = require('http');
+const express = require('express');
+const app = express();
+const server = http.createServer(app);
 const io = require('socket.io')(PORT, {
     cors: {
         origin: "*",
@@ -85,3 +88,4 @@ gifs.on('connection', socket => {
     });
 })
 
+server.listen(PORT);

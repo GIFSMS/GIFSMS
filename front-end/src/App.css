@@ -2,13 +2,6 @@
   text-align: center;
 }
 
-*{
-  -ms-overflow-style: none;
-}
-::-webkit-scrollbar {
-  display: none;
-}
-
 .body {
   min-height: 100vh;
   display: flex;
@@ -41,7 +34,7 @@
   flex-direction: column;
   grid-area: 1 / 2 / 2 / 3;
   bottom:0px;
-  height: calc(100vh - 100px);
+  width: calc(100vh - 100px);
 }
 
 .message {
@@ -72,7 +65,7 @@
 
 .side-nav{
   grid-area: 1 / 1 / 2 / 2;
-  height: 100vh;
+  height: calc(100vh - 100px);
   top: 100px;
   left: 0;
   position: fixed;
@@ -83,6 +76,7 @@
   overflow: auto;
   border-right: 1px solid #fff;
   padding: 0 30px;
+  min-width: 300px;
 }
 
 .rooms{
@@ -131,8 +125,12 @@
   background-color: slategray;
   overflow: auto;
   border-left: 1px solid #fff;
-  padding: 0 30px;
+  min-width: 300px;
  }
+
+ .gifTown ::-webkit-scrollbar {
+  display: none;
+}
  
  .search-side{
   justify-content: center;

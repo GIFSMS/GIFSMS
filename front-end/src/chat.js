@@ -264,14 +264,11 @@ let Chat = ({ user }) => {
                         }
                     </div>
                 </div>
-                <div className="chat">
-                    <div className="chat-header">
-                        
-                    </div>
+      
                     <div className="chatArea">
                         {chatWindow(chat)}
                     </div>
-                </div>
+
 
                 <div className="searcher">
                     <div className="search-side">
@@ -279,9 +276,9 @@ let Chat = ({ user }) => {
                     </div>
                     <div className="search-gifs">
                         <input placeholder="Giphys" type="text" onChange={(e) => onChang(e)} onKeyDown={(e) => ent(e)} value={state.message} />
-                        <button onClick={Data.handleAPICall}>Search</button>
+                        
                     </div>
-
+                    <button onClick={Data.handleAPICall}>Search</button>
                     <button onClick={gamble}>Random</button>
 
 

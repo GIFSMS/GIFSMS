@@ -1,0 +1,207 @@
+.chat-container {
+  display: flex; 
+  height: 80vh;
+  background: $bg-chat;
+  overflow:auto;
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 4px;
+
+    .side-nav {
+        flex: 25%;
+        z-index: 1;
+        background: transparent;
+        /* box-shadow: 8px 5px 20px grey; */
+        overflow: auto;
+        border-right: 1px solid #fff;
+        padding: 0 30px 0 0;
+        display: flex;
+
+        .side-bar {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            z-index: 1;
+            box-shadow: 2px 0px 18px -1px #9c9c9c;
+            
+            div {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 5px;
+                i {
+                    margin: 10px 0 3px;
+                    color: $bg-color2;
+                    background-color: $bg-color3;
+                    padding: 10px;
+                    border-radius: 4px;
+                    cursor: pointer;
+
+                    &.active {
+                        background-color: $bg-color1;
+                        color: #fff;
+                    }
+                }
+
+                p {
+                    margin: 0;
+                    font-size: 10px;
+                }
+            }
+            
+        }
+
+        .side-nav-content {
+            flex: 1;
+            background-color: $bg-color4;
+
+            .rooms{
+                display: grid;
+                justify-content: stretch;
+
+                h3 {
+                    margin: 10px 0;
+                }
+            }
+
+
+            .create-room {
+                display: flex;
+                height: 35px;
+                align-items: center;
+                justify-content: center;
+                margin-top: 20px;
+                
+
+                    button {
+                    background: transparent;
+                    outline: none;
+                    border: none;
+                    color: #fff;
+                    padding: 0;
+                    font-size: 36px;
+                    position: relative;
+                    cursor: pointer;
+                    align-self: stretch;
+                    display: flex;
+                }
+
+                input {
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    margin: 0 20px;
+                    border-radius: 4px;
+                }
+            }
+
+            .participants {
+                display: grid;
+                justify-content: center;
+                margin-top: 40px;
+
+                h3 {
+                    margin: 10px 0;
+                }
+            }
+        }
+
+        
+    }
+
+    .chat {
+        flex: 50%;
+        height: 100%;
+
+        .chatArea {
+            display: flex;
+            text-align: center;
+            padding: 30px 10%;
+            flex-direction: column;
+
+            .message {
+                display: flex;
+                justify-content: flex-end;
+
+                h2 {
+                    margin: 10px 0 35px;
+                }
+            }
+
+            .my-message {
+                display: flex;
+                justify-content: flex-start;
+
+                h2 {
+                    margin: 10px 0 35px;
+                }
+            }
+
+            .notification h4 {
+                color: #fff;
+                text-align: center;
+                justify-content: center;
+                margin-top:0;
+            }
+        }
+    }
+
+     .searcher {
+        flex: 25%;
+        justify-content: center;
+        z-index: 1;
+        /* box-shadow: -8px 5px 20px grey; */
+        background-color: transparent;
+        overflow: auto;
+        border-left: 1px solid #fff;
+        padding: 0 15px;
+
+        button {
+            background: transparent;
+            border: 1px solid #fff;
+            outline: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all .2s;
+            padding: 5px 7px;
+
+            &:hover {
+                background: #fff;
+                color: slategray;
+            }
+        }
+
+        .search-side {
+            justify-content: center;
+            padding-top: 5px;
+            margin-bottom: 50px;
+        }
+
+        .search-gifs {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            margin-bottom: 15px;
+
+            input {
+                border:none;
+            }
+        }
+
+        .gifTown {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            margin-top: 30px;
+
+            .gif-prev {
+                margin-bottom: 7px;
+
+                img {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,4 @@
-'use strict';
-
 import React from 'react';
-import './login.css';
 import { useAuth0, withAuth0 } from '@auth0/auth0-react';
 
 

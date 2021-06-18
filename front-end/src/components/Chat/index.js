@@ -1,4 +1,4 @@
-import './App.css';
+
 import React, { useState, useEffect, useRef } from 'react';
 
 const superagent = require('superagent');
@@ -16,6 +16,7 @@ let Chat = ({ user }) => {
     const [newRoom, setNewRoom] = useState('');
     const [gifArray, setGifArray] = useState([]);
     const [activeRoom, setActiveRoom] = useState('Main Room');
+    const [activeSideNav, setActiveSideNav] = useState('chat');
 
     const onChang = (e) => {
         setState({ ...state, message: e.target.value })
@@ -231,37 +232,79 @@ let Chat = ({ user }) => {
         if (e.key === "Enter") { Data.handleAPICall() }
     }
 
+    //Create room with enter key
+    const newRoomEnter = e => {
+        if (e.key === "Enter") joinRoom();
+    }
+
 
     return (
         <>
             <div className="chat-container">
                 <div className="side-nav">
-                    <div className="rooms">
-                        <h2>Chat Rooms</h2>
-                        {
-                            rooms && (
+                    <div className="side-bar">
+                        <div>
+                            <i className={activeSideNav === 'chat' ? `fas fa-comments active` : `fas fa-comments`} onClick={() => setActiveSideNav('chat')}></i>
+                            <p>Chat</p>
+                        </div>
+                        <div>
+                            <i className={activeSideNav === 'users' ? `fas fa-users active` : `fas fa-users`} onClick={() => setActiveSideNav('users')}></i>
+                            <p>Users</p>
+                        </div>
+                    </div>
+
+                    <div className="side-nav-content">
+                        {activeSideNav === 'chat' ?
+                            (<>
+                                <div className="rooms">
+                                    <div className="create-room">
+                                        <input type="text" placeholder="Create Room" value={newRoom} onChange={e => setNewRoom(e.target.value)} onKeyUp={newRoomEnter} />
+                                        {/* <button onClick={joinRoom}><i class="fas fa-plus-square"></i></button> */}
+                                    </div>
+                                    {/* <h2>Chat Rooms</h2> */}
+                                    {
+                                        rooms && (
+                                            <>
+                                                {chatRooms()}
+                                            </>
+                                        )
+                                    }
+
+
+                                </div>
+                                <div className="participants">
+                                    <h2>Chat Participants</h2>
+                                    {
+                                        participants && (
+                                            <>
+                                                {chatParticipants()}
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </>
+
+                            ) :
+
+                            (
                                 <>
-                                    {chatRooms()}
+                                    <div className="participants">
+                                        <h2>All Participants</h2>
+                                        {
+                                            participants && (
+                                                <>
+                                                    {chatParticipants()}
+                                                </>
+                                            )
+                                        }
+                                    </div>
                                 </>
                             )
                         }
-                        <div className="create-room">
-                            <input type="text" placeholder="Create Room" value={newRoom} onChange={e => setNewRoom(e.target.value)} />
-                            <button onClick={joinRoom}><i class="fas fa-plus-square"></i></button>
-                        </div>
-                        {/* <button onClick={leaveRoom}>Leave Room</button> */}
+
 
                     </div>
-                    <div className="participants">
-                        <h2>Chat Participants</h2>
-                        {
-                            participants && (
-                                <>
-                                    {chatParticipants()}
-                                </>
-                            )
-                        }
-                    </div>
+
                 </div>
                 <div className="chat">
                     <h2>Chat</h2>

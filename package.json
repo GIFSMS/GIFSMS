@@ -1,0 +1,23 @@
+{
+  "name": "GIFSMS",
+  "version": "1.0.0",
+  "description": "![jarpic](https://media-exp1.licdn.com/dms/image/C5603AQHGEeIrUVqSgQ/profile-displayphoto-shrink_200_200/0/1583288845201?e=1626307200&v=beta&t=XgeQvihKxTw3TATex2Qb9ZoSXC8-QfrX7k7Shu9qMwQ \"jarrell\") - Jarrell \"[Jarrell28](https://github.com/Jarrell28)\" Houston",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GIFSMS/GIFSMS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GIFSMS/GIFSMS/issues"
+  },
+  "homepage": "https://github.com/GIFSMS/GIFSMS#readme"
+}

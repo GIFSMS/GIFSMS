@@ -1,0 +1,39 @@
+.login-box {
+    width: 100%;
+    height: 100vh;
+    background-color: slategray;
+    position: relative;
+}
+
+.login-box h1 {
+    color: #fff;
+    position: absolute;
+    top: 38%;
+    text-align: center;
+    width: 100%;
+    font-size: 70px;
+    font-weight: 400;
+    letter-spacing: 5px;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+.login-box button {
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 7px 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border-radius: 2px;
+    font-size: 25px;
+    cursor: pointer;
+    transition: .2s all;
+}
+
+.login-box button:hover {
+    background-color: #fff;
+    color: slategray;
+}

@@ -2,8 +2,8 @@
 
 const io = require('socket.io-client');
 
-// const HOST = process.env.HOST || "http://gifsms-env.eba-pn2gaatk.us-east-2.elasticbeanstalk.com";
-const HOST = process.env.HOST || "http://localhost:3001";
+const HOST = process.env.HOST || "https://gifsms.herokuapp.com/";
+// const HOST = process.env.HOST || "http://localhost:3001";
 
 const socket = io.connect(HOST + "/gifs");
 

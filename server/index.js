@@ -14,6 +14,7 @@ const gifs = io.of('/gifs');
 const gifsRooms = {};
 
 gifs.on('connection', socket => {
+    console.log('User Joined Chat:' + socket.id);
 
     //Function to have users join rooms
     socket.on('join', payload => {
@@ -68,16 +69,19 @@ gifs.on('connection', socket => {
         //Emits user left room notification to clients in specific room
         socket.to(payload.room).emit('user disconnected', payload);
 
+        //When a user leaves a room, see if room is empty and delete room
+        if (gifsRooms[payload.room].length === 0) {
+            if (gifsRooms[payload.room] !== "Main Room") {
+                delete gifsRooms[payload.room];
+            }
+        }
+
         //Get List of rooms and send to all clients
         let rooms = Object.keys(gifsRooms);
         gifs.emit('get rooms', { rooms });
 
-        //When a user leaves a room, see if room is empty and delete room
-        if (gifsRooms[payload.room].length === 0) {
-            delete gifsRooms[payload.room];
-        }
-
         //Handles removal of user from from
         socket.leave(payload.room);
-    })
+    });
 })
+

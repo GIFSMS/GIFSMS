@@ -1,6 +1,7 @@
-'user stricrt';
+'use strict';
 
 import React from 'react';
+import './login.css';
 import { useAuth0, withAuth0 } from '@auth0/auth0-react';
 
 
@@ -9,7 +10,8 @@ function LoginButton() {
 
     return !isAuthenticated && (
         <div className='login-box'>
-            <button color='red' onClick={loginWithRedirect}>
+            <h1>GIFSMS</h1>
+            <button onClick={loginWithRedirect}>
                 Login Here
             </button>
         </div>

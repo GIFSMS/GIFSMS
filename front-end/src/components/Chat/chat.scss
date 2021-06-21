@@ -1,0 +1,325 @@
+.chat-container {
+  display: flex; 
+  height: 85vh;
+  background: $bg-chat;
+  overflow:auto;
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 4px;
+
+    .side-nav {
+        flex: 25%;
+        max-width: 300px;
+        z-index: 1;
+        background: transparent;
+        /* box-shadow: 8px 5px 20px grey; */
+        overflow: auto;
+        border-right: 1px solid #fff;
+        // padding: 0 30px 0 0;
+        display: flex;
+
+        .side-bar {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            z-index: 1;
+            box-shadow: 2px 0px 18px -1px #9c9c9c;
+            
+            div {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 5px;
+                i {
+                    margin: 10px 0 3px;
+                    color: $bg-color2;
+                    background-color: $bg-color3;
+                    padding: 10px;
+                    border-radius: 4px;
+                    cursor: pointer;
+
+                    &.active {
+                        background-color: $bg-color1;
+                        color: #fff;
+                    }
+                }
+
+                p {
+                    margin: 0;
+                    font-size: 10px;
+                }
+            }
+            
+        }
+
+        .side-nav-content {
+            flex: 1;
+            background-color: $bg-color4;
+            padding: 0 15px;
+
+            .rooms {
+                display: flex;
+                flex-direction: column;
+                justify-content: stretch;
+
+                .room {
+                    border-bottom: 1px solid lightgray;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    h3 {
+                        margin: 10px 0;
+                        color: $text-color2;
+                        font-weight: 500;
+                        text-align: left;
+                    }
+
+                    .fa-door-open {
+                        cursor: pointer;
+                    }
+                }
+
+            }
+
+
+            .create-room {
+                display: flex;
+                height: 35px;
+                align-items: center;
+                justify-content: center;
+                margin: 20px 0;
+                
+                    button {
+                    background: transparent;
+                    outline: none;
+                    border: none;
+                    color: #fff;
+                    padding: 0;
+                    font-size: 36px;
+                    position: relative;
+                    cursor: pointer;
+                    align-self: stretch;
+                    display: flex;
+                }
+
+                input {
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    border-radius: 4px;
+                }
+            }
+
+            .participants, .allParticipants {
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                margin-top: 40px;
+
+                h2 {
+                    font-size: 22px;
+                }
+
+                .participant {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid lightgray;
+
+                    h3 {
+                        margin: 10px 0;
+                        color: $text-color2;
+                        font-weight: 500;
+                    }
+
+                    i {
+                        cursor: pointer;
+                    }
+                }
+
+                
+            }
+
+            .allParticipants {
+                margin-top: 0;
+            }
+        }
+
+        
+    }
+
+    .chat {
+        flex: 1;
+        height: 100%;
+        padding: 0 20px;
+
+        h2 {
+            height: 10%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatArea {
+            display: flex;
+            text-align: center;
+
+            flex-direction: column;
+            height: 90%;
+
+            .chatWindow {
+                flex: 9;
+                overflow-y: scroll;
+                -ms-overflow-style: none; /* for Internet Explorer, Edge */
+                scrollbar-width: none; /* for Firefox */
+
+                .message {
+                    display: flex;
+                    justify-content: flex-end;
+
+                    h2 {
+                        margin: 10px 0 35px;
+                    }
+                }
+
+                .my-message {
+                    display: flex;
+                    justify-content: flex-start;
+
+                    h2 {
+                        margin: 10px 0 35px;
+                        font-size: 18px;
+                    }
+
+                    img {
+                        width: 8vw;
+                        height: 8vw;
+                    }
+                }
+
+                .notification h4 {
+                    color: $text-color1;
+                    text-align: center;
+                    justify-content: center;
+                    margin-top:0;
+                }
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+
+            
+
+            .search-gifs {
+                display: flex;
+                align-items: stretch;
+                flex-direction: column;
+                justify-content: center;
+                margin-bottom: 15px;
+                flex: 1;
+
+                .search {
+                    display: flex;
+                    align-items: center;
+
+                    label {
+                        position: relative;
+                        flex: 1;
+
+                        input {
+                            border:none;
+                            box-shadow: 0px 0px 10px 0px rgba(217,217,217,1);
+                            border-radius: 4px;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        i {
+                            position: absolute;
+                            top: 50%;
+                            right: 0;
+                            transform: translateY(-50%);
+                            color: $text-color2;
+                            cursor: pointer;
+                        }
+                    }
+
+                    button {
+                        // width: 10%;
+                        flex: min-content;
+                        margin-left: 20px;
+                        background-color: $bg-color1;
+                        color: #fff;
+                        height: 100%;
+                        border: none;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    }
+                    
+                }
+
+                .gifTown {
+                    display: flex;
+                    align-content: center;
+                    justify-content: center;
+                    margin-top: 10px;
+                    border: 1px solid lightgray;
+                    padding: 10px 0;
+                    border-radius: 4px;
+
+                    .gif-prev {
+                        width: 6vw;
+                        height: 6vw;
+                        margin: 0 7px;
+
+                        img {
+                            cursor: pointer;
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+                }
+            }
+
+            
+        }
+    }
+
+     .searcher {
+        flex: 25%;
+        justify-content: center;
+        z-index: 1;
+        /* box-shadow: -8px 5px 20px grey; */
+        background-color: transparent;
+        overflow: auto;
+        border-left: 1px solid #fff;
+        padding: 0 15px;
+
+        button {
+            background: transparent;
+            border: 1px solid #fff;
+            outline: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all .2s;
+            padding: 5px 7px;
+
+            &:hover {
+                background: #fff;
+                color: slategray;
+            }
+        }
+
+        .search-side {
+            justify-content: center;
+            padding-top: 5px;
+            margin-bottom: 50px;
+        }
+
+        
+    }
+}

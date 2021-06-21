@@ -271,6 +271,15 @@ let Chat = ({ user , authPro }) => {
         socket.emit('update', {...profile, favorites: update})
     }
 
+    const favoriteArray = () => {
+        return profile.favorites.map(el => (
+            <li className="gif-prev">
+                <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
+            </li>
+
+        ))
+    }
+
 
     return (
         <>
@@ -378,11 +387,8 @@ let Chat = ({ user , authPro }) => {
 
                     <div className="profile-favorites">
                         <h3>Favorites</h3>
-                        <ul>
-                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
-                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
-                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
-                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
+                        <ul className="profile-favorites">
+                            {favoriteArray()}
                         </ul>
                     </div>
 

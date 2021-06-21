@@ -20,7 +20,7 @@ class App extends React.Component {
             <div className="App">
                 {!this.props.auth0.isAuthenticated
                     ? <Login />
-                    : <Chat user={this.props.auth0.user.nickname} />}
+                    : <Chat user={this.props.auth0.user.nickname} authPro={this.props.auth0.user} />}
             </div>
         );
     }

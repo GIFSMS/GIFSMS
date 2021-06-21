@@ -109,11 +109,13 @@ let Chat = ({ user }) => {
         superagent.get(url)
             .query({ api_key: `${process.env.REACT_APP_GIF_API}` })
             .then(function (superagentResults) {
-                let workable = superagentResults.body.data
+                let workable = superagentResults.body.data;
+                console.log(superagentResults)
                 socket.emit('message', { message: workable.images.fixed_width.url, user: state.user, room: activeRoom })
             })
             .catch(function (error) {
                 console.log('Womp Womp');
+                console.log(error);
                 // res.status(500).send('we messed up');
             })
     }
@@ -176,10 +178,11 @@ let Chat = ({ user }) => {
     //Displays the participants
     const chatParticipants = () => {
         return activeRoom ? participants.map((user, index) => (
-            <div key={index}>
+            <div key={index} className="participant">
                 <h3>
                     {user}
                 </h3>
+                <span><i class="fas fa-user"></i></span>
             </div>
         ))
 
@@ -189,16 +192,17 @@ let Chat = ({ user }) => {
     //Displays the chat rooms
     const chatRooms = () => {
         return rooms.map((room, index) => (
-            <div key={index}>
-                <h3 room={room} onClick={switchRoom}>
-                    {room} {room === activeRoom ? " - active" : ""}
+            <div key={index} room={room} className="room">
+                <h3>
+                    {room}
                 </h3>
+                {room === activeRoom ? <span><i className="fas fa-user-check"></i></span> : <span><i className="fas fa-door-open" onClick={switchRoom}></i></span>}
             </div>
         ))
     }
 
     const switchRoom = (e) => {
-        let selectedRoom = e.target.getAttribute('room');
+        let selectedRoom = e.target.parentElement.parentElement.getAttribute('room');
         if (activeRoom !== selectedRoom) {
             if (activeRoom) {
                 socket.emit('leave', { user: state.user, room: activeRoom });
@@ -217,14 +221,6 @@ let Chat = ({ user }) => {
             setActiveRoom(newRoom);
         }
         setNewRoom('');
-    }
-
-    //leave room and update current room
-    const leaveRoom = () => {
-        setChat([]);
-        setParticipants([]);
-        socket.emit('leave', { user: state.user, room: activeRoom });
-        setActiveRoom('');
     }
 
     //I want to press enter to submit
@@ -273,7 +269,7 @@ let Chat = ({ user }) => {
 
                                 </div>
                                 <div className="participants">
-                                    <h2>Chat Participants</h2>
+                                    <h2>Room Participants</h2>
                                     {
                                         participants && (
                                             <>
@@ -288,7 +284,7 @@ let Chat = ({ user }) => {
 
                             (
                                 <>
-                                    <div className="participants">
+                                    <div className="allParticipants">
                                         <h2>All Participants</h2>
                                         {
                                             participants && (
@@ -309,26 +305,36 @@ let Chat = ({ user }) => {
                 <div className="chat">
                     <h2>Chat</h2>
                     <div className="chatArea">
-                        {chatWindow()}
+                        <div className="chatWindow">
+                            {chatWindow()}
+                        </div>
+
+                        <div className="search-gifs">
+                            <div className="search">
+                                <label htmlFor="">
+                                    <input placeholder="Search Giphs" type="text" onChange={(e) => onChang(e)} onKeyDown={(e) => ent(e)} value={state.message} />
+                                    <i class="fas fa-search" onClick={Data.handleAPICall}></i>
+                                </label>
+
+
+                                <button onClick={gamble}>Random Giph!</button>
+                            </div>
+
+                            <div className='gifTown'>
+                                {gifWindow(gifArray)}
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
 
-                <div className="searcher">
+                {/* <div className="profile">
                     <div className="search-side">
                         <h2>Giphys</h2>
                     </div>
-                    <div className="search-gifs">
-                        <input placeholder="Search Giphs" type="text" onChange={(e) => onChang(e)} onKeyDown={(e) => ent(e)} value={state.message} />
-                        <button onClick={Data.handleAPICall}>Giph Me</button>
-                    </div>
 
-                    <button onClick={gamble}>Random Giph!</button>
-
-
-                    <div className='gifTown'>
-                        {gifWindow(gifArray)}
-                    </div>
-                </div>
+                </div> */}
 
 
             </div>

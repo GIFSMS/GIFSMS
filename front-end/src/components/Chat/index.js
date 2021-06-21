@@ -64,6 +64,10 @@ let Chat = ({ user , authPro }) => {
             
         })
 
+        socket.on('updatecheck', payload => {
+            console.log("AFTER UPDATE TO DB: ", payload)
+        })
+
         console.log(state);
 
         // eslint-disable-next-line
@@ -264,7 +268,7 @@ let Chat = ({ user , authPro }) => {
         let update = [...profile.favorites, {image: e.target.src, id: e.target.id, title: e.target.alt }]
         setProfile( {...profile, favorites: update})
         console.log("ADDED FAV: ", update, profile)
-        socket.emit('update', update)
+        socket.emit('update', {...profile, favorites: update})
     }
 
 

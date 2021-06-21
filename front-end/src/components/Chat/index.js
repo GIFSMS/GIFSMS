@@ -17,6 +17,7 @@ let Chat = ({ user }) => {
     const [gifArray, setGifArray] = useState([]);
     const [activeRoom, setActiveRoom] = useState('Main Room');
     const [activeSideNav, setActiveSideNav] = useState('chat');
+    const [toggleProfile, setToggleProfile] = useState(false);
 
     const onChang = (e) => {
         setState({ ...state, message: e.target.value })
@@ -53,6 +54,8 @@ let Chat = ({ user }) => {
         socket.on('user disconnected', payload => {
             setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has left the room`, user: payload.user }])
         })
+
+        console.log(state);
 
         // eslint-disable-next-line
     }, [])
@@ -182,7 +185,7 @@ let Chat = ({ user }) => {
                 <h3>
                     {user}
                 </h3>
-                <span><i class="fas fa-user"></i></span>
+                <span onClick={() => setToggleProfile(!toggleProfile)}><i class="fas fa-user"></i></span>
             </div>
         ))
 
@@ -329,12 +332,35 @@ let Chat = ({ user }) => {
                     </div>
                 </div>
 
-                {/* <div className="profile">
-                    <div className="search-side">
-                        <h2>Giphys</h2>
+                <div className={toggleProfile ? "profile open" : "profile"}>
+                    <div className="profile-close" onClick={() => setToggleProfile(!toggleProfile)}><i class="fas fa-times"></i></div>
+
+                    <h2>Profile</h2>
+                    <div className="profile-info">
+                        {state.user}
                     </div>
 
-                </div> */}
+                    <div className="profile-favorites">
+                        <h3>Favorites</h3>
+                        <ul>
+                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
+                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
+                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
+                            <li><img src="https://media4.giphy.com/media/LwHiQgqggwsDxDFNJc/giphy.gif" alt="Sample" /></li>
+                        </ul>
+                    </div>
+
+                    <div className="profile-friends">
+                        <h3>Friends</h3>
+                        <ul>
+                            <li>Friend 1</li>
+                            <li>Friend 2</li>
+                            <li>Friend 3</li>
+                            <li>Friend 4</li>
+                        </ul>
+                    </div>
+
+                </div>
 
 
             </div>

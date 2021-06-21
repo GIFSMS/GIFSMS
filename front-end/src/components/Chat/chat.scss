@@ -2,10 +2,11 @@
   display: flex; 
   height: 85vh;
   background: $bg-chat;
-  overflow:auto;
+  overflow:hidden;
   width: 80%;
   margin: 0 auto;
   border-radius: 4px;
+  box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.40);
 
     .side-nav {
         flex: 25%;
@@ -32,14 +33,14 @@
                 i {
                     margin: 10px 0 3px;
                     color: $bg-color2;
-                    background-color: $bg-color3;
+                    background-color: $text-color3;
                     padding: 10px;
                     border-radius: 4px;
                     cursor: pointer;
 
                     &.active {
-                        background-color: $bg-color1;
-                        color: #fff;
+                        background-image: $bg-gradient1;
+                        color: $text-color3;
                     }
                 }
 
@@ -93,7 +94,7 @@
                     background: transparent;
                     outline: none;
                     border: none;
-                    color: #fff;
+                    color: $text-color3;
                     padding: 0;
                     font-size: 36px;
                     position: relative;
@@ -250,8 +251,8 @@
                         // width: 10%;
                         flex: min-content;
                         margin-left: 20px;
-                        background-color: $bg-color1;
-                        color: #fff;
+                        background-image: $bg-gradient1;
+                        color: $text-color3;
                         height: 100%;
                         border: none;
                         border-radius: 4px;
@@ -301,7 +302,7 @@
             background: transparent;
             border: 1px solid #fff;
             outline: none;
-            color: #fff;
+            color: $text-color3;
             font-size: 16px;
             border-radius: 2px;
             cursor: pointer;
@@ -309,7 +310,7 @@
             padding: 5px 7px;
 
             &:hover {
-                background: #fff;
+                background: $text-color3;
                 color: slategray;
             }
         }
@@ -321,5 +322,87 @@
         }
 
         
+    }
+
+    .profile {
+        flex: 1;
+        max-width: 0;
+        height: 100%;
+        background-image: $bg-gradient1;
+        padding: 0;
+        border-radius: 4px;
+        backface-visibility: hidden;
+        position: relative;
+        // display: none;
+        transition: max-width .2s, padding .2s;
+
+        .profile-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+
+            i {
+                color: $text-color3;
+                font-size: 25px;
+            }
+        }
+
+        h2, h3 {
+            color: $text-color3;
+        }
+
+        .profile-info {
+            color: $text-color3;
+        }
+
+        .profile-favorites {
+            border-top: 1px solid lightgray;
+            border-bottom: 1px solid lightgray;
+            margin: 30px 0;
+            padding: 20px 0;
+            display: none;
+
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                li {
+                    flex: 45%;
+                    padding: 5px;
+                    img {
+                        width: 70px;
+                        height: auto;
+                    }
+                }
+            }
+        }
+
+        .profile-friends {
+            color: $text-color3;
+            display: none;
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                li {
+                    flex: 45%;
+                    padding: 5px;
+                
+                }
+            }
+        }
+
+        &.open {
+            max-width: 240px;
+            padding: 0 15px;
+            // display: block;
+            // transform: translateX(0);
+            // height: unset;
+
+            .profile-favorites, .profile-friends {
+                display: block;
+            }
+        }
     }
 }

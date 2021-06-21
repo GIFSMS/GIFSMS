@@ -15,10 +15,6 @@ class App extends React.Component {
         this.setState({ user: { info } })
     }
 
-    componentDidMount() {
-        console.log(this.props.auth0.user);
-    }
-
     render() {
         return (
             <div className="App">

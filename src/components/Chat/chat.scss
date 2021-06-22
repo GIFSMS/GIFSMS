@@ -199,6 +199,24 @@
                     }
                 }
 
+                .message, .my-message {
+                    .message-content {
+                        position: relative;
+
+                        .message-favorite {
+                            position: absolute;
+                            top: -20px;
+                            right: -20px;
+
+                            i {
+                                font-size: 20px;
+                                cursor: pointer;
+                                color: $text-color2;
+                            }
+                        }
+                    }
+                }
+
                 .notification h4 {
                     color: $text-color1;
                     text-align: center;
@@ -330,7 +348,6 @@
         height: 100%;
         background-image: $bg-gradient1;
         padding: 0;
-        border-radius: 4px;
         backface-visibility: hidden;
         position: relative;
         // display: none;
@@ -366,13 +383,21 @@
             ul {
                 display: flex;
                 flex-wrap: wrap;
+                justify-content: flex-start;
+                overflow-y: scroll;
+                max-height: 30vh;
+
                 li {
                     flex: 45%;
                     padding: 5px;
                     img {
-                        width: 70px;
-                        height: auto;
+                        width: 5vw;
+                        height: 5vw;
                     }
+                }
+
+                 &::-webkit-scrollbar {
+                    display: none;
                 }
             }
         }
@@ -388,7 +413,6 @@
                 li {
                     flex: 45%;
                     padding: 5px;
-                
                 }
             }
         }

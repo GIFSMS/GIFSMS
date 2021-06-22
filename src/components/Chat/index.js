@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 
 const superagent = require('superagent');
@@ -67,8 +66,6 @@ let Chat = ({ user, authPro }) => {
         socket.on('updatecheck', payload => {
             console.log("AFTER UPDATE TO DB: ", payload)
         })
-
-        console.log(state);
 
         // eslint-disable-next-line
     }, [])
@@ -153,8 +150,8 @@ let Chat = ({ user, authPro }) => {
 
     //function to render the gifs from api call
     const gifWindow = (data) => {
-        return data.map(el => (
-            <div className="gif-prev">
+        return data.map((el, index) => (
+            <div className="gif-prev" key={el.id + index}>
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
             </div>
 
@@ -172,6 +169,17 @@ let Chat = ({ user, authPro }) => {
         scrollToBottom()
     }, [chat]);
 
+    const hasFavorite = (id) => {
+        let bool = profile.favorites.reduce((acc, cur) => {
+            if (cur.id === id) {
+                acc = true;
+                return acc;
+            }
+            return acc;
+        }, false)
+
+        return bool;
+    }
 
     //Displays the chat messages
     const chatWindow = () => {
@@ -188,9 +196,10 @@ let Chat = ({ user, authPro }) => {
                 :
                 <>
                     <div key={index} className={user === state.user ? "my-message" : "message"}>
-                        <div>
-                            <img alt={message.title} src={message.image} id={message.id} onClick={e => addFav(e)} />
+                        <div className="message-content">
+                            <img alt={message.title} src={message.image} id={message.id} />
                             <h2>{user}</h2>
+                            <div className="message-favorite" onClick={() => addFav(message.title, message.image, message.id)}><i className={hasFavorite(message.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
                         </div>
                     </div>
                     <div ref={messagesEndRef} />
@@ -205,7 +214,7 @@ let Chat = ({ user, authPro }) => {
                 <h3>
                     {user}
                 </h3>
-                <span onClick={() => setToggleProfile(!toggleProfile)}><i class="fas fa-user"></i></span>
+                <span onClick={() => setToggleProfile(!toggleProfile)}><i className="fas fa-user"></i></span>
             </div>
         ))
 
@@ -263,17 +272,17 @@ let Chat = ({ user, authPro }) => {
         if (e.key === "Enter") joinRoom();
     }
 
-    const addFav = e => {
-        e.preventDefault();
-        let update = [...profile.favorites, { image: e.target.src, id: e.target.id, title: e.target.alt }]
+    const addFav = (title, image, id) => {
+        // e.preventDefault();
+        let update = [...profile.favorites, { image, id, title }]
         setProfile({ ...profile, favorites: update })
         console.log("ADDED FAV: ", update, profile)
         socket.emit('update', { ...profile, favorites: update })
     }
 
     const favoriteArray = () => {
-        return profile.favorites.map(el => (
-            <li className="gif-prev">
+        return profile.favorites.map((el, index) => (
+            <li className="gif-prev" key={el.id + index}>
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
             </li>
 
@@ -360,7 +369,7 @@ let Chat = ({ user, authPro }) => {
                             <div className="search">
                                 <label htmlFor="">
                                     <input placeholder="Search Giphs" type="text" onChange={(e) => onChang(e)} onKeyDown={(e) => ent(e)} value={state.message} />
-                                    <i class="fas fa-search" onClick={Data.handleAPICall}></i>
+                                    <i className="fas fa-search" onClick={Data.handleAPICall}></i>
                                 </label>
 
 
@@ -378,7 +387,7 @@ let Chat = ({ user, authPro }) => {
                 </div>
 
                 <div className={toggleProfile ? "profile open" : "profile"}>
-                    <div className="profile-close" onClick={() => setToggleProfile(!toggleProfile)}><i class="fas fa-times"></i></div>
+                    <div className="profile-close" onClick={() => setToggleProfile(!toggleProfile)}><i className="fas fa-times"></i></div>
 
                     <h2>Profile</h2>
                     <div className="profile-info">
@@ -387,7 +396,7 @@ let Chat = ({ user, authPro }) => {
 
                     <div className="profile-favorites">
                         <h3>Favorites</h3>
-                        <ul className="profile-favorites">
+                        <ul>
                             {favoriteArray()}
                         </ul>
                     </div>

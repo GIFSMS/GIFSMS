@@ -19,7 +19,8 @@ let Chat = ({ user , authPro }) => {
     const [activeRoom, setActiveRoom] = useState('Main Room');
     const [activeSideNav, setActiveSideNav] = useState('chat');
     const [toggleProfile, setToggleProfile] = useState(false);
-    const [profile, setProfile] = useState({email:"", favorites:[], friends:[], id:0})
+    const [profile, setProfile] = useState({email:"", favorites:[], friends:[], id:0});
+    // const [favoriteToggle, setFavoriteToggle] = useState(false);
 
     const onChang = (e) => {
         setState({ ...state, message: e.target.value })
@@ -101,7 +102,7 @@ let Chat = ({ user , authPro }) => {
 
     useEffect(() => {
             socket.emit('logingif', {user:authPro.email})
-        console.log(profile)
+        console.log( authPro)
     }, [authPro])
 
 
@@ -246,12 +247,6 @@ let Chat = ({ user , authPro }) => {
         setNewRoom('');
     }
 
-    //UPDATING THE MAIN PROFILE
-    // const updateProfile = (data) => {
-    //     let update = {...profile, ...data}
-    //     setProfile(update)
-    //     socket.emit('update', update)
-    // }
 
     //I want to press enter to submit
     const ent = (e) => {
@@ -265,19 +260,33 @@ let Chat = ({ user , authPro }) => {
 
     const addFav = e => {
         e.preventDefault();
+        let duplicate = profile.favorites.reduce((acc, curr) => {
+            if (curr.id === e.target.id) {acc = true}
+            return acc
+        }, false);
+        
+        if (!duplicate){
         let update = [...profile.favorites, {image: e.target.src, id: e.target.id, title: e.target.alt }]
         setProfile( {...profile, favorites: update})
         console.log("ADDED FAV: ", update, profile)
         socket.emit('update', {...profile, favorites: update})
+        }else {
+        let update = profile.favorites.filter(el => el.id!==e.target.id)
+        setProfile( {...profile, favorites: update})
+        console.log("REMOVED FAV: ", update, profile)
+        socket.emit('update', {...profile, favorites: update})
+        }
+        
     }
 
     const favoriteArray = () => {
-        return profile.favorites.map(el => (
+        if (profile.favorites){
+            return profile.favorites.map(el => (
             <li className="gif-prev">
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
             </li>
 
-        ))
+        ))}
     }
 
 
@@ -368,8 +377,9 @@ let Chat = ({ user , authPro }) => {
                                 {/* <button onClick={updateProfile(gifArray[0])}>Add to fav</button> */}
                             </div>
 
+                                {/* <button onClick={setFavoriteToggle(!favoriteToggle)}>fav</button> */}
                             <div className='gifTown'>
-                                {gifWindow(gifArray)}
+                                 {gifWindow(gifArray)}
                             </div>
                         </div>
 
@@ -387,7 +397,7 @@ let Chat = ({ user , authPro }) => {
 
                     <div className="profile-favorites">
                         <h3>Favorites</h3>
-                        <ul className="profile-favorites">
+                        <ul>
                             {favoriteArray()}
                         </ul>
                     </div>

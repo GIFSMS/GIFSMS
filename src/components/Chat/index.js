@@ -5,10 +5,10 @@ const superagent = require('superagent');
 const io = require('socket.io-client');
 require('dotenv').config();
 // const HOST = process.env.REACT_APP_HOST || 'http://localhost:3001';
-const HOST = process.env.REACT_APP_HOSTT || "http://localhost:3004"
+const HOST = process.env.REACT_APP_HOSTT || "http://localhost:3001"
 const socket = io.connect(`${HOST}/gifs`);
 
-let Chat = ({ user , authPro }) => {
+let Chat = ({ user, authPro }) => {
 
     const [state, setState] = useState({ message: '', user: '' });
     const [chat, setChat] = useState([]);
@@ -19,7 +19,7 @@ let Chat = ({ user , authPro }) => {
     const [activeRoom, setActiveRoom] = useState('Main Room');
     const [activeSideNav, setActiveSideNav] = useState('chat');
     const [toggleProfile, setToggleProfile] = useState(false);
-    const [profile, setProfile] = useState({email:"", favorites:[], friends:[], id:0})
+    const [profile, setProfile] = useState({ email: "", favorites: [], friends: [], id: 0 })
 
     const onChang = (e) => {
         setState({ ...state, message: e.target.value })
@@ -61,7 +61,7 @@ let Chat = ({ user , authPro }) => {
         socket.on('profile', payload => {
             console.log("PROFILE EMMIT: ", payload)
             setProfile(payload)
-            
+
         })
 
         socket.on('updatecheck', payload => {
@@ -84,7 +84,7 @@ let Chat = ({ user , authPro }) => {
                 .then(function (results) {
                     let base = results.body.data
                     base.forEach(el => {
-                        rez.push({image: el.images.fixed_width.url, id: el.id, title: el.title})
+                        rez.push({ image: el.images.fixed_width.url, id: el.id, title: el.title })
                     })
 
                     setGifArray(arr => [...rez])
@@ -100,7 +100,7 @@ let Chat = ({ user , authPro }) => {
     }, [state.user])
 
     useEffect(() => {
-            socket.emit('logingif', {user:authPro.email})
+        socket.emit('logingif', { user: authPro.email })
         console.log(profile)
     }, [authPro])
 
@@ -116,7 +116,7 @@ let Chat = ({ user , authPro }) => {
                 Data.results = superagentResults
                 let workable = Data.results.body.data
                 workable.forEach(el => {
-                    Data.set.push({image: el.images.fixed_width.url, id: el.id, title: el.title})
+                    Data.set.push({ image: el.images.fixed_width.url, id: el.id, title: el.title })
                 })
                 setGifArray(arr => [...Data.set])
                 Data.set = []
@@ -147,7 +147,7 @@ let Chat = ({ user , authPro }) => {
     //method for images to send on click
     const clickMe = (e) => {
         e.preventDefault();
-        socket.emit('message', { message: {image: e.target.src, id: e.target.id, title: e.target.alt}, user: state.user, room: activeRoom })
+        socket.emit('message', { message: { image: e.target.src, id: e.target.id, title: e.target.alt }, user: state.user, room: activeRoom })
         setState({ ...state, message: '' })
     }
 
@@ -189,7 +189,7 @@ let Chat = ({ user , authPro }) => {
                 <>
                     <div key={index} className={user === state.user ? "my-message" : "message"}>
                         <div>
-                            <img alt={message.title} src={message.image}  id={message.id} onClick={e => addFav(e)} />
+                            <img alt={message.title} src={message.image} id={message.id} onClick={e => addFav(e)} />
                             <h2>{user}</h2>
                         </div>
                     </div>
@@ -265,10 +265,10 @@ let Chat = ({ user , authPro }) => {
 
     const addFav = e => {
         e.preventDefault();
-        let update = [...profile.favorites, {image: e.target.src, id: e.target.id, title: e.target.alt }]
-        setProfile( {...profile, favorites: update})
+        let update = [...profile.favorites, { image: e.target.src, id: e.target.id, title: e.target.alt }]
+        setProfile({ ...profile, favorites: update })
         console.log("ADDED FAV: ", update, profile)
-        socket.emit('update', {...profile, favorites: update})
+        socket.emit('update', { ...profile, favorites: update })
     }
 
     const favoriteArray = () => {

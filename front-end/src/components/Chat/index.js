@@ -4,10 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 const superagent = require('superagent');
 const io = require('socket.io-client');
 require('dotenv').config();
-const HOST = process.env.REACT_APP_HOST || 'http://localhost:3001';
+// const HOST = process.env.REACT_APP_HOST || 'http://localhost:3001';
+const HOST = process.env.REACT_APP_HOSTT || "http://localhost:3004"
 const socket = io.connect(`${HOST}/gifs`);
 
-let Chat = ({ user }) => {
+let Chat = ({ user , authPro }) => {
 
     const [state, setState] = useState({ message: '', user: '' });
     const [chat, setChat] = useState([]);
@@ -17,6 +18,8 @@ let Chat = ({ user }) => {
     const [gifArray, setGifArray] = useState([]);
     const [activeRoom, setActiveRoom] = useState('Main Room');
     const [activeSideNav, setActiveSideNav] = useState('chat');
+    const [toggleProfile, setToggleProfile] = useState(false);
+    const [profile, setProfile] = useState({email:"", favorites:[], friends:[], id:0})
 
     const onChang = (e) => {
         setState({ ...state, message: e.target.value })
@@ -29,6 +32,9 @@ let Chat = ({ user }) => {
             //Sets chat notification of user joining room
             setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has joined the room`, user: payload.user }])
         });
+
+        //Once User logs in, updates state for current user
+        setState({ ...state, user });
 
         //Receives list of participants from socket server
         socket.on('get participants', payload => {
@@ -46,13 +52,23 @@ let Chat = ({ user }) => {
             setChat(arr => [...arr, { message: payload.message, user: payload.user }])
         });
 
-        //Once User logs in, updates state for current user
-        setState({ ...state, user });
 
         //Notifies when user leaves a room
         socket.on('user disconnected', payload => {
             setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has left the room`, user: payload.user }])
         })
+
+        socket.on('profile', payload => {
+            console.log("PROFILE EMMIT: ", payload)
+            setProfile(payload)
+            
+        })
+
+        socket.on('updatecheck', payload => {
+            console.log("AFTER UPDATE TO DB: ", payload)
+        })
+
+        console.log(state);
 
         // eslint-disable-next-line
     }, [])
@@ -68,7 +84,7 @@ let Chat = ({ user }) => {
                 .then(function (results) {
                     let base = results.body.data
                     base.forEach(el => {
-                        rez.push(el.images.fixed_width.url)
+                        rez.push({image: el.images.fixed_width.url, id: el.id, title: el.title})
                     })
 
                     setGifArray(arr => [...rez])
@@ -78,8 +94,15 @@ let Chat = ({ user }) => {
                     // res.status(500).send('we messed up');
                 })
             socket.emit('join', { user: state.user, room: "Main Room" })
+            // socket.emit('logingif', {user: authPro.email})
+            // console.log("AUTH0?: ", authPro.email)
         }
     }, [state.user])
+
+    useEffect(() => {
+            socket.emit('logingif', {user:authPro.email})
+        console.log(profile)
+    }, [authPro])
 
 
 
@@ -93,7 +116,7 @@ let Chat = ({ user }) => {
                 Data.results = superagentResults
                 let workable = Data.results.body.data
                 workable.forEach(el => {
-                    Data.set.push(el.images.fixed_width.url)
+                    Data.set.push({image: el.images.fixed_width.url, id: el.id, title: el.title})
                 })
                 setGifArray(arr => [...Data.set])
                 Data.set = []
@@ -124,7 +147,7 @@ let Chat = ({ user }) => {
     //method for images to send on click
     const clickMe = (e) => {
         e.preventDefault();
-        socket.emit('message', { message: e.target.src, user: state.user, room: activeRoom })
+        socket.emit('message', { message: {image: e.target.src, id: e.target.id, title: e.target.alt}, user: state.user, room: activeRoom })
         setState({ ...state, message: '' })
     }
 
@@ -132,7 +155,7 @@ let Chat = ({ user }) => {
     const gifWindow = (data) => {
         return data.map(el => (
             <div className="gif-prev">
-                <img src={el} alt={el} onClick={(e) => clickMe(e)} />
+                <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
             </div>
 
         ))
@@ -166,7 +189,7 @@ let Chat = ({ user }) => {
                 <>
                     <div key={index} className={user === state.user ? "my-message" : "message"}>
                         <div>
-                            <img alt={index} src={message} />
+                            <img alt={message.title} src={message.image}  id={message.id} onClick={e => addFav(e)} />
                             <h2>{user}</h2>
                         </div>
                     </div>
@@ -182,7 +205,7 @@ let Chat = ({ user }) => {
                 <h3>
                     {user}
                 </h3>
-                <span><i class="fas fa-user"></i></span>
+                <span onClick={() => setToggleProfile(!toggleProfile)}><i class="fas fa-user"></i></span>
             </div>
         ))
 
@@ -223,6 +246,13 @@ let Chat = ({ user }) => {
         setNewRoom('');
     }
 
+    //UPDATING THE MAIN PROFILE
+    // const updateProfile = (data) => {
+    //     let update = {...profile, ...data}
+    //     setProfile(update)
+    //     socket.emit('update', update)
+    // }
+
     //I want to press enter to submit
     const ent = (e) => {
         if (e.key === "Enter") { Data.handleAPICall() }
@@ -231,6 +261,23 @@ let Chat = ({ user }) => {
     //Create room with enter key
     const newRoomEnter = e => {
         if (e.key === "Enter") joinRoom();
+    }
+
+    const addFav = e => {
+        e.preventDefault();
+        let update = [...profile.favorites, {image: e.target.src, id: e.target.id, title: e.target.alt }]
+        setProfile( {...profile, favorites: update})
+        console.log("ADDED FAV: ", update, profile)
+        socket.emit('update', {...profile, favorites: update})
+    }
+
+    const favoriteArray = () => {
+        return profile.favorites.map(el => (
+            <li className="gif-prev">
+                <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
+            </li>
+
+        ))
     }
 
 
@@ -318,6 +365,7 @@ let Chat = ({ user }) => {
 
 
                                 <button onClick={gamble}>Random Giph!</button>
+                                {/* <button onClick={updateProfile(gifArray[0])}>Add to fav</button> */}
                             </div>
 
                             <div className='gifTown'>
@@ -329,12 +377,32 @@ let Chat = ({ user }) => {
                     </div>
                 </div>
 
-                {/* <div className="profile">
-                    <div className="search-side">
-                        <h2>Giphys</h2>
+                <div className={toggleProfile ? "profile open" : "profile"}>
+                    <div className="profile-close" onClick={() => setToggleProfile(!toggleProfile)}><i class="fas fa-times"></i></div>
+
+                    <h2>Profile</h2>
+                    <div className="profile-info">
+                        {state.user}
                     </div>
 
-                </div> */}
+                    <div className="profile-favorites">
+                        <h3>Favorites</h3>
+                        <ul className="profile-favorites">
+                            {favoriteArray()}
+                        </ul>
+                    </div>
+
+                    <div className="profile-friends">
+                        <h3>Friends</h3>
+                        <ul>
+                            <li>Friend 1</li>
+                            <li>Friend 2</li>
+                            <li>Friend 3</li>
+                            <li>Friend 4</li>
+                        </ul>
+                    </div>
+
+                </div>
 
 
             </div>

@@ -15,16 +15,12 @@ class App extends React.Component {
         this.setState({ user: { info } })
     }
 
-    componentDidMount() {
-        console.log(this.props.auth0.user);
-    }
-
     render() {
         return (
             <div className="App">
                 {!this.props.auth0.isAuthenticated
                     ? <Login />
-                    : <Chat user={this.props.auth0.user.nickname} />}
+                    : <Chat user={this.props.auth0.user.nickname} authPro={this.props.auth0.user} />}
             </div>
         );
     }

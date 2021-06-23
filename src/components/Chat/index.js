@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 const superagent = require('superagent');
 const io = require('socket.io-client');
 require('dotenv').config();
-// const HOST = process.env.REACT_APP_HOST || 'http://localhost:3001';
 const HOST = process.env.REACT_APP_HOSTT || "http://localhost:3001"
 const socket = io.connect(`${HOST}/gifs`);
 
@@ -29,7 +28,7 @@ let Chat = ({ user, authPro }) => {
         socket.on('user joined', payload => {
             console.log(payload);
             //Sets chat notification of user joining room
-            setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has joined the room`, user: payload.user }])
+            setChat(arr => [...arr, { type: "notification", message: `User ${payload.userInfo.user} has joined the room`, user: payload.userInfo.user }])
         });
 
         //Once User logs in, updates state for current user
@@ -48,19 +47,18 @@ let Chat = ({ user, authPro }) => {
         //User has sent a message
         socket.on('message', payload => {
             //Updates the chat message list
-            setChat(arr => [...arr, { message: payload.message, user: payload.user }])
+            setChat(arr => [...arr, { message: payload.message, user: payload.userInfo.user }])
         });
 
 
         //Notifies when user leaves a room
         socket.on('user disconnected', payload => {
-            setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has left the room`, user: payload.user }])
+            setChat(arr => [...arr, { type: "notification", message: `User ${payload.userInfo.user} has left the room`, user: payload.user }])
         })
 
         socket.on('profile', payload => {
             console.log("PROFILE EMMIT: ", payload)
-            setProfile(payload)
-
+            setProfile(payload);
         })
 
         socket.on('updatecheck', payload => {
@@ -73,7 +71,7 @@ let Chat = ({ user, authPro }) => {
     // Have user join main room after login
     // load trending gifs to the gifArray
     useEffect(() => {
-        if (state.user) {
+        if (profile.email) {
             let rez = []
             let url = `https://api.giphy.com/v1/gifs/trending?limit=5`
             superagent.get(url)
@@ -90,11 +88,11 @@ let Chat = ({ user, authPro }) => {
                     console.log('Womp Womp', error);
                     // res.status(500).send('we messed up');
                 })
-            socket.emit('join', { user: state.user, room: "Main Room" })
+            socket.emit('join', { userInfo: { ...profile, user: state.user }, room: "Main Room" })
             // socket.emit('logingif', {user: authPro.email})
             // console.log("AUTH0?: ", authPro.email)
         }
-    }, [state.user])
+    }, [profile.email])
 
     useEffect(() => {
         socket.emit('logingif', { user: authPro.email })
@@ -208,12 +206,12 @@ let Chat = ({ user, authPro }) => {
 
     //Displays the participants
     const chatParticipants = () => {
-        return activeRoom ? participants.map((user, index) => (
+        return activeRoom ? participants.map((userObj, index) => (
             <div key={index} className="participant">
                 <h3>
-                    {user}
+                    {userObj.user}
                 </h3>
-                <span onClick={() => setToggleProfile(!toggleProfile)}><i className="fas fa-user"></i></span>
+                <span onClick={() => fetchProfile(userObj.user)}><i className="fas fa-user"></i></span>
             </div>
         ))
 
@@ -247,6 +245,9 @@ let Chat = ({ user, authPro }) => {
     //Users should be able to create own public rooms or private rooms to specific users
     const joinRoom = () => {
         if (newRoom) {
+            if (activeRoom) {
+                socket.emit('leave', { user: state.user, room: activeRoom });
+            }
             setChat([]);
             socket.emit('join', { user: state.user, room: newRoom });
             setActiveRoom(newRoom);
@@ -274,20 +275,20 @@ let Chat = ({ user, authPro }) => {
     const addFav = (title, image, id) => {
         // check if it already favorited
         let duplicate = profile.favorites.reduce((acc, curr) => {
-            if (curr.id === id) {acc = true}
+            if (curr.id === id) { acc = true }
             return acc
         }, false);
 
-        if (!duplicate){
+        if (!duplicate) {
             let update = [...profile.favorites, { image, id, title }]
             setProfile({ ...profile, favorites: update })
             console.log("ADDED FAV: ", update, profile)
             socket.emit('update', { ...profile, favorites: update })
-        }else{
-            let update = profile.favorites.filter(el => el.id!==id)
-            setProfile( {...profile, favorites: update})
+        } else {
+            let update = profile.favorites.filter(el => el.id !== id)
+            setProfile({ ...profile, favorites: update })
             console.log("REMOVED FAV: ", update, profile)
-            socket.emit('update', {...profile, favorites: update})
+            socket.emit('update', { ...profile, favorites: update })
         }
     }
 
@@ -295,10 +296,22 @@ let Chat = ({ user, authPro }) => {
         return profile.favorites.map((el, index) => (
             <li className="gif-prev" key={el.id + index}>
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
-                <div className="message-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
+                <div className="profile-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
             </li>
 
         ))
+    }
+
+    const fetchProfile = (username) => {
+        let profile = participants.filter(userObj => userObj.user === username)[0];
+        setProfile(profile);
+        if (!toggleProfile) setToggleProfile(!toggleProfile);
+    }
+
+    const fetchMyProfile = () => {
+        let profile = participants.filter(userObj => userObj.user === state.user)[0];
+        setProfile(profile);
+        setToggleProfile(!toggleProfile);
     }
 
 
@@ -399,7 +412,7 @@ let Chat = ({ user, authPro }) => {
                 </div>
 
                 <div className={toggleProfile ? "profile open" : "profile"}>
-                    <div className="profile-close" onClick={() => setToggleProfile(!toggleProfile)}><i className="fas fa-times"></i></div>
+                    <div className={toggleProfile ? "profile-close active" : "profile-close"} onClick={toggleProfile ? () => setToggleProfile(!toggleProfile) : fetchMyProfile}><i className={toggleProfile ? "fas fa-times" : "fas fa-user"}></i></div>
 
                     <h2>Profile</h2>
                     <div className="profile-info">
@@ -409,7 +422,9 @@ let Chat = ({ user, authPro }) => {
                     <div className="profile-favorites">
                         <h3>Favorites</h3>
                         <ul>
-                            {favoriteArray()}
+                            {profile.favorites.length ? favoriteArray() : (
+                                <p>This user has no favorites!</p>
+                            )}
                         </ul>
                     </div>
 

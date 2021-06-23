@@ -30,10 +30,11 @@
                 display: flex;
                 flex-direction: column;
                 margin-bottom: 5px;
+
                 i {
                     margin: 10px 0 3px;
-                    color: $bg-color2;
-                    background-color: $text-color3;
+                    color: $text-color2;
+                    background-color: $bg-color3;
                     padding: 10px;
                     border-radius: 4px;
                     cursor: pointer;
@@ -77,6 +78,10 @@
 
                     .fa-door-open {
                         cursor: pointer;
+                    }
+
+                    i {
+                        color: $text-color2;
                     }
                 }
 
@@ -135,6 +140,7 @@
 
                     i {
                         cursor: pointer;
+                        color: $text-color2;
                     }
                 }
 
@@ -174,6 +180,7 @@
                 overflow-y: scroll;
                 -ms-overflow-style: none; /* for Internet Explorer, Edge */
                 scrollbar-width: none; /* for Firefox */
+                padding: 0px 30px;
 
                 .message {
                     display: flex;
@@ -188,15 +195,6 @@
                     display: flex;
                     justify-content: flex-start;
 
-                    h2 {
-                        margin: 10px 0 35px;
-                        font-size: 18px;
-                    }
-
-                    img {
-                        width: 8vw;
-                        height: 8vw;
-                    }
                 }
 
                 .message, .my-message {
@@ -213,6 +211,16 @@
                                 cursor: pointer;
                                 color: $text-color2;
                             }
+                        }
+
+                        img {
+                            width: 8vw;
+                            height: 8vw;
+                        }
+
+                        h2 {
+                            margin: 10px 0 35px;
+                            font-size: 18px;
                         }
                     }
                 }
@@ -360,8 +368,15 @@
             cursor: pointer;
 
             i {
-                color: $text-color3;
+                color: $text-color2;
                 font-size: 25px;
+            }
+
+            &.active {
+
+                i {
+                    color: $text-color3;
+                }
             }
         }
 
@@ -380,20 +395,47 @@
             padding: 20px 0;
             display: none;
 
+            h3 {
+                margin: 0;
+            }
+
             ul {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: flex-start;
                 overflow-y: scroll;
                 max-height: 30vh;
+                padding-top: 20px;
 
                 li {
                     flex: 45%;
+                    max-width: 45%;
                     padding: 5px;
+                    position: relative;
+
                     img {
                         width: 5vw;
                         height: 5vw;
+                        cursor: pointer;
                     }
+
+                    .profile-favorite {
+                            position: absolute;
+                            top: -10px;
+                            right: 8px;
+
+                            i {
+                                font-size: 16px;
+                                cursor: pointer;
+                                color: $text-color3;
+                            }
+                        }
+                }
+
+                p {
+                    color: $text-color3;
+                    text-align: center;
+                    width: 100%;
                 }
 
                  &::-webkit-scrollbar {

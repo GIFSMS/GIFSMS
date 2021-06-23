@@ -3,8 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const superagent = require('superagent');
 const io = require('socket.io-client');
 require('dotenv').config();
-// const HOST = process.env.REACT_APP_HOST || 'http://localhost:3001';
-const HOST = process.env.REACT_APP_HOSTT || "http://localhost:3001"
+const HOST = process.env.REACT_APP_HOST || "http://localhost:3001"
 const socket = io.connect(`${HOST}/gifs`);
 
 let Chat = ({ user, authPro }) => {
@@ -247,6 +246,9 @@ let Chat = ({ user, authPro }) => {
     //Users should be able to create own public rooms or private rooms to specific users
     const joinRoom = () => {
         if (newRoom) {
+            if (activeRoom) {
+                socket.emit('leave', { user: state.user, room: activeRoom });
+            }
             setChat([]);
             socket.emit('join', { user: state.user, room: newRoom });
             setActiveRoom(newRoom);
@@ -274,20 +276,20 @@ let Chat = ({ user, authPro }) => {
     const addFav = (title, image, id) => {
         // check if it already favorited
         let duplicate = profile.favorites.reduce((acc, curr) => {
-            if (curr.id === id) {acc = true}
+            if (curr.id === id) { acc = true }
             return acc
         }, false);
 
-        if (!duplicate){
+        if (!duplicate) {
             let update = [...profile.favorites, { image, id, title }]
             setProfile({ ...profile, favorites: update })
             console.log("ADDED FAV: ", update, profile)
             socket.emit('update', { ...profile, favorites: update })
-        }else{
-            let update = profile.favorites.filter(el => el.id!==id)
-            setProfile( {...profile, favorites: update})
+        } else {
+            let update = profile.favorites.filter(el => el.id !== id)
+            setProfile({ ...profile, favorites: update })
             console.log("REMOVED FAV: ", update, profile)
-            socket.emit('update', {...profile, favorites: update})
+            socket.emit('update', { ...profile, favorites: update })
         }
     }
 
@@ -295,7 +297,7 @@ let Chat = ({ user, authPro }) => {
         return profile.favorites.map((el, index) => (
             <li className="gif-prev" key={el.id + index}>
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
-                <div className="message-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
+                <div className="profile-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
             </li>
 
         ))
@@ -399,7 +401,7 @@ let Chat = ({ user, authPro }) => {
                 </div>
 
                 <div className={toggleProfile ? "profile open" : "profile"}>
-                    <div className="profile-close" onClick={() => setToggleProfile(!toggleProfile)}><i className="fas fa-times"></i></div>
+                    <div className={toggleProfile ? "profile-close active" : "profile-close"} onClick={() => setToggleProfile(!toggleProfile)}><i className={toggleProfile ? "fas fa-times" : "fas fa-user"}></i></div>
 
                     <h2>Profile</h2>
                     <div className="profile-info">
@@ -409,7 +411,9 @@ let Chat = ({ user, authPro }) => {
                     <div className="profile-favorites">
                         <h3>Favorites</h3>
                         <ul>
-                            {favoriteArray()}
+                            {profile.favorites.length ? favoriteArray() : (
+                                <p>This user has no favorites!</p>
+                            )}
                         </ul>
                     </div>
 

@@ -98,7 +98,6 @@ let Chat = ({ user, authPro }) => {
 
     useEffect(() => {
         socket.emit('logingif', { user: authPro.email })
-        console.log(profile)
     }, [authPro])
 
 
@@ -273,17 +272,30 @@ let Chat = ({ user, authPro }) => {
     }
 
     const addFav = (title, image, id) => {
-        // e.preventDefault();
-        let update = [...profile.favorites, { image, id, title }]
-        setProfile({ ...profile, favorites: update })
-        console.log("ADDED FAV: ", update, profile)
-        socket.emit('update', { ...profile, favorites: update })
+        // check if it already favorited
+        let duplicate = profile.favorites.reduce((acc, curr) => {
+            if (curr.id === id) {acc = true}
+            return acc
+        }, false);
+
+        if (!duplicate){
+            let update = [...profile.favorites, { image, id, title }]
+            setProfile({ ...profile, favorites: update })
+            console.log("ADDED FAV: ", update, profile)
+            socket.emit('update', { ...profile, favorites: update })
+        }else{
+            let update = profile.favorites.filter(el => el.id!==id)
+            setProfile( {...profile, favorites: update})
+            console.log("REMOVED FAV: ", update, profile)
+            socket.emit('update', {...profile, favorites: update})
+        }
     }
 
     const favoriteArray = () => {
         return profile.favorites.map((el, index) => (
             <li className="gif-prev" key={el.id + index}>
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
+                <div className="message-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
             </li>
 
         ))

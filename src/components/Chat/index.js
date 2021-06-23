@@ -295,6 +295,7 @@ let Chat = ({ user, authPro }) => {
         return profile.favorites.map((el, index) => (
             <li className="gif-prev" key={el.id + index}>
                 <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
+                <div className="message-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
             </li>
 
         ))

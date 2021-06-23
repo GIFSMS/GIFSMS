@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const superagent = require('superagent');
 const io = require('socket.io-client');
 require('dotenv').config();
-const HOST = process.env.REACT_APP_HOST || "http://localhost:3001"
+const HOST = process.env.REACT_APP_HOSTT || "http://localhost:3001"
 const socket = io.connect(`${HOST}/gifs`);
 
 let Chat = ({ user, authPro }) => {

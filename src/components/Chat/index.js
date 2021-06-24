@@ -116,31 +116,34 @@ let Chat = ({ user, authPro }) => {
     const Data = { set: [] };
     Data.handleAPICall = async (req, res) => {
         const url = `https://api.giphy.com/v1/gifs/search?q=${state.message}&limit=5`;
-        superagent.get(url)
-            .query({ api_key: `${process.env.REACT_APP_GIF_API}` })
-            .then(function (superagentResults) {
-                Data.results = superagentResults
-                let workable = Data.results.body.data
-                workable.forEach(el => {
-                    Data.set.push({ image: el.images.fixed_width.url, id: el.id, title: el.title })
+        if (state.message) {
+            superagent.get(url)
+                .query({ api_key: `${process.env.REACT_APP_GIF_API}` })
+                .then(function (superagentResults) {
+                    Data.results = superagentResults
+                    let workable = Data.results.body.data
+                    workable.forEach(el => {
+                        Data.set.push({ image: el.images.fixed_width.url, id: el.id, title: el.title })
+                    })
+                    setGifArray(arr => [...Data.set])
+                    Data.set = []
                 })
-                setGifArray(arr => [...Data.set])
-                Data.set = []
-            })
-            .catch(function (error) {
-                console.log('Womp Womp', error);
-            })
+                .catch(function (error) {
+                    console.log('Womp Womp', error);
+                })
+        }
+
     }
 
     //"translate" API call to Giphy
     const gamble = async (req, res) => {
-        const url = `https://api.giphy.com/v1/gifs/translate?s=${state.message}`;
+        const url = `https://api.giphy.com/v1/gifs/random`;
         superagent.get(url)
             .query({ api_key: `${process.env.REACT_APP_GIF_API}` })
             .then(function (superagentResults) {
                 let workable = superagentResults.body.data;
                 console.log(superagentResults)
-                socket.emit('message', { message: workable.images.fixed_width.url, user: state.user, room: activeRoom })
+                socket.emit('message', { message: { image: workable.images.fixed_width.url, id: workable.id, title: workable.title }, user: state.user, room: activeRoom })
             })
             .catch(function (error) {
                 console.log('Womp Womp');
@@ -455,7 +458,7 @@ let Chat = ({ user, authPro }) => {
                         </ul>
                     </div>
 
-                    <div className="profile-friends">
+                    {/* <div className="profile-friends">
                         <h3>Friends</h3>
                         <ul>
                             <li>Friend 1</li>
@@ -463,7 +466,7 @@ let Chat = ({ user, authPro }) => {
                             <li>Friend 3</li>
                             <li>Friend 4</li>
                         </ul>
-                    </div>
+                    </div> */}
 
                 </div>
 

@@ -334,7 +334,6 @@ let Chat = ({ user, authPro }) => {
     }
 
     const fetchProfile = (email) => {
-        console.log(email, profile.email);
         if (email === profile.email) {
             if (!toggleProfile) setToggleProfile(true);
             setViewMyProfile(true);
@@ -442,11 +441,11 @@ let Chat = ({ user, authPro }) => {
                 </div>
 
                 <div className={toggleProfile ? "profile open" : "profile"}>
-                    <div className={toggleProfile ? "profile-close active" : "profile-close"} onClick={() => setToggleProfile(!toggleProfile)}><i className={toggleProfile ? "fas fa-times" : "fas fa-user"}></i></div>
+                    <div className={toggleProfile ? "profile-close active" : "profile-close"} onClick={() => setToggleProfile(!toggleProfile)}><i className={toggleProfile ? "fas fa-times" : "fas fa-times closed"}></i></div>
 
                     <h2>Profile</h2>
                     <div className="profile-info">
-                        {viewMyProfile ? profile.user?.nickname : userProfile.user?.nickname}
+                        {viewMyProfile ? profile.nickname : userProfile.nickname}
                     </div>
 
                     <div className="profile-favorites">

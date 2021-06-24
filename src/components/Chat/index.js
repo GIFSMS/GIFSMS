@@ -238,7 +238,7 @@ let Chat = ({ user, authPro }) => {
                 <h3>
                     {user.nickname}
                 </h3>
-                <span><i class="fas fa-user"></i></span>
+                <span onClick={() => fetchProfile(user.email)}><i class="fas fa-user"></i></span>
             </div>
         ))
 

@@ -12,6 +12,7 @@ let Chat = ({ user }) => {
     const [state, setState] = useState({ message: '', user: '' });
     const [chat, setChat] = useState([]);
     const [participants, setParticipants] = useState([]);
+    const [allWhoEnter, setAllParticipants] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [newRoom, setNewRoom] = useState('');
     const [gifArray, setGifArray] = useState([]);
@@ -33,6 +34,10 @@ let Chat = ({ user }) => {
         //Receives list of participants from socket server
         socket.on('get participants', payload => {
             setParticipants(payload.participants)
+        })
+
+        socket.on('get all participants', payload => {
+            setAllParticipants(payload)
         })
 
         //Receives list of rooms
@@ -189,6 +194,23 @@ let Chat = ({ user }) => {
             : ""
     }
 
+
+    //Displays the participants
+    const allParticipants = () => {
+        return allWhoEnter.map((user, index) => (
+            
+            <div key={index} className="participant">
+                <h3>
+                    {user}
+                </h3>
+                <span><i class="fas fa-user"></i></span>
+            </div>
+        ))
+            
+    }
+
+
+
     //Displays the chat rooms
     const chatRooms = () => {
         return rooms.map((room, index) => (
@@ -287,9 +309,9 @@ let Chat = ({ user }) => {
                                     <div className="allParticipants">
                                         <h2>All Participants</h2>
                                         {
-                                            participants && (
+                                            participants && (  //?//
                                                 <>
-                                                    {chatParticipants()}
+                                                    {allParticipants()}
                                                 </>
                                             )
                                         }

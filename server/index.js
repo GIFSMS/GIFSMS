@@ -16,6 +16,12 @@ const gifsRooms = {};
 gifs.on('connection', socket => {
     console.log('User Joined Chat:' + socket.id);
 
+    if (!gifsRooms[payload.room].includes(payload.user)) {
+        gifsRooms[payload.room].push(payload.user);
+    }
+
+
+
     //Function to have users join rooms
     socket.on('join', payload => {
         //Initiates list of participants in specific rooms

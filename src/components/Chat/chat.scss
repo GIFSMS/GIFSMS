@@ -198,6 +198,7 @@
                 }
 
                 .message, .my-message {
+
                     .message-content {
                         position: relative;
 
@@ -368,14 +369,11 @@
             cursor: pointer;
 
             i {
-                color: $text-color2;
+                color: $text-color3;
                 font-size: 25px;
-            }
 
-            &.active {
-
-                i {
-                    color: $text-color3;
+                &.closed {
+                    display: none;
                 }
             }
         }
@@ -412,6 +410,7 @@
                     max-width: 45%;
                     padding: 5px;
                     position: relative;
+                    margin: 1vh 0;
 
                     img {
                         width: 5vw;
@@ -421,8 +420,8 @@
 
                     .profile-favorite {
                             position: absolute;
-                            top: -10px;
-                            right: 8px;
+                            top: -13%;
+                            right: -1%;
 
                             i {
                                 font-size: 16px;

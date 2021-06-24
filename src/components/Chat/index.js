@@ -8,16 +8,19 @@ const socket = io.connect(`${HOST}/gifs`);
 
 let Chat = ({ user, authPro }) => {
 
-    const [state, setState] = useState({ message: '', user: '' });
+    const [state, setState] = useState({ message: '', user: {} });
     const [chat, setChat] = useState([]);
     const [participants, setParticipants] = useState([]);
+    const [allWhoEnter, setAllParticipants] = useState([]);
     const [rooms, setRooms] = useState([]);
     const [newRoom, setNewRoom] = useState('');
     const [gifArray, setGifArray] = useState([]);
     const [activeRoom, setActiveRoom] = useState('Main Room');
     const [activeSideNav, setActiveSideNav] = useState('chat');
     const [toggleProfile, setToggleProfile] = useState(false);
-    const [profile, setProfile] = useState({ email: "", favorites: [], friends: [], id: 0 })
+    const [profile, setProfile] = useState({ email: "", favorites: [], friends: [], id: 0, nickname: '' })
+    const [userProfile, setUserProfile] = useState({});
+    const [viewMyProfile, setViewMyProfile] = useState(false);
 
     const onChang = (e) => {
         setState({ ...state, message: e.target.value })
@@ -28,15 +31,19 @@ let Chat = ({ user, authPro }) => {
         socket.on('user joined', payload => {
             console.log(payload);
             //Sets chat notification of user joining room
-            setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has joined the room`, user: payload.user }])
+            setChat(arr => [...arr, { type: "notification", message: `User ${payload.user.nickname} has joined the room`, user: payload.user }])
         });
 
         //Once User logs in, updates state for current user
-        setState({ ...state, user });
+        setState({ ...state, user: authPro });
 
         //Receives list of participants from socket server
         socket.on('get participants', payload => {
             setParticipants(payload.participants)
+        })
+
+        socket.on('get all participants', payload => {
+            setAllParticipants(payload)
         })
 
         //Receives list of rooms
@@ -53,17 +60,21 @@ let Chat = ({ user, authPro }) => {
 
         //Notifies when user leaves a room
         socket.on('user disconnected', payload => {
-            setChat(arr => [...arr, { type: "notification", message: `User ${payload.user} has left the room`, user: payload.user }])
+            setChat(arr => [...arr, { type: "notification", message: `User ${payload.user.nickname} has left the room`, user: payload.user }])
         })
 
         socket.on('profile', payload => {
             console.log("PROFILE EMMIT: ", payload)
             setProfile(payload)
-
         })
 
         socket.on('updatecheck', payload => {
             console.log("AFTER UPDATE TO DB: ", payload)
+        })
+
+        socket.on('fetch profile', payload => {
+            setUserProfile(payload)
+            if (!toggleProfile) setToggleProfile(!toggleProfile);
         })
 
         // eslint-disable-next-line
@@ -72,7 +83,7 @@ let Chat = ({ user, authPro }) => {
     // Have user join main room after login
     // load trending gifs to the gifArray
     useEffect(() => {
-        if (state.user) {
+        if (state.user.nickname) {
             let rez = []
             let url = `https://api.giphy.com/v1/gifs/trending?limit=5`
             superagent.get(url)
@@ -96,7 +107,7 @@ let Chat = ({ user, authPro }) => {
     }, [state.user])
 
     useEffect(() => {
-        socket.emit('logingif', { user: authPro.email })
+        socket.emit('logingif', { user: authPro })
     }, [authPro])
 
 
@@ -193,10 +204,10 @@ let Chat = ({ user, authPro }) => {
                 </>
                 :
                 <>
-                    <div key={index} className={user === state.user ? "my-message" : "message"}>
+                    <div key={index} className={user.nickname === state.user.nickname ? "my-message" : "message"}>
                         <div className="message-content">
                             <img alt={message.title} src={message.image} id={message.id} />
-                            <h2>{user}</h2>
+                            <h2>{user.nickname}</h2>
                             <div className="message-favorite" onClick={() => addFav(message.title, message.image, message.id)}><i className={hasFavorite(message.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
                         </div>
                     </div>
@@ -210,13 +221,27 @@ let Chat = ({ user, authPro }) => {
         return activeRoom ? participants.map((user, index) => (
             <div key={index} className="participant">
                 <h3>
-                    {user}
+                    {user.nickname}
                 </h3>
-                <span onClick={() => setToggleProfile(!toggleProfile)}><i className="fas fa-user"></i></span>
+                <span onClick={() => fetchProfile(user.email)}><i className="fas fa-user"></i></span>
             </div>
         ))
 
             : ""
+    }
+
+    //Displays the participants
+    const allParticipants = () => {
+        return allWhoEnter.map((user, index) => (
+
+            <div key={index} className="participant">
+                <h3>
+                    {user.nickname}
+                </h3>
+                <span onClick={() => fetchProfile(user.email)}><i class="fas fa-user"></i></span>
+            </div>
+        ))
+
     }
 
     //Displays the chat rooms
@@ -294,13 +319,28 @@ let Chat = ({ user, authPro }) => {
     }
 
     const favoriteArray = () => {
-        return profile.favorites.map((el, index) => (
-            <li className="gif-prev" key={el.id + index}>
-                <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
-                <div className="profile-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
-            </li>
+        let favProfile = viewMyProfile ? profile : userProfile;
 
-        ))
+        return favProfile.favorites?.length ?
+            (
+                favProfile.favorites.map((el, index) => (
+                    <li className="gif-prev" key={el.id + index}>
+                        <img src={el.image} alt={el.title} id={el.id} key={el.id} onClick={(e) => clickMe(e)} />
+                        <div className="profile-favorite" onClick={() => addFav(el.title, el.image, el.id)}><i className={hasFavorite(el.id) ? "fas fa-heart" : "far fa-heart"}></i></div>
+                    </li>
+                ))
+
+            ) : <p>This user has no favorites!</p>
+    }
+
+    const fetchProfile = (email) => {
+        if (email === profile.email) {
+            if (!toggleProfile) setToggleProfile(true);
+            setViewMyProfile(true);
+        } else {
+            socket.emit('fetch profile', email);
+            setViewMyProfile(false);
+        }
     }
 
 
@@ -357,9 +397,9 @@ let Chat = ({ user, authPro }) => {
                                     <div className="allParticipants">
                                         <h2>All Participants</h2>
                                         {
-                                            participants && (
+                                            allWhoEnter && (
                                                 <>
-                                                    {chatParticipants()}
+                                                    {allParticipants()}
                                                 </>
                                             )
                                         }
@@ -401,19 +441,17 @@ let Chat = ({ user, authPro }) => {
                 </div>
 
                 <div className={toggleProfile ? "profile open" : "profile"}>
-                    <div className={toggleProfile ? "profile-close active" : "profile-close"} onClick={() => setToggleProfile(!toggleProfile)}><i className={toggleProfile ? "fas fa-times" : "fas fa-user"}></i></div>
+                    <div className={toggleProfile ? "profile-close active" : "profile-close"} onClick={() => setToggleProfile(!toggleProfile)}><i className={toggleProfile ? "fas fa-times" : "fas fa-times closed"}></i></div>
 
                     <h2>Profile</h2>
                     <div className="profile-info">
-                        {state.user}
+                        {viewMyProfile ? profile.nickname : userProfile.nickname}
                     </div>
 
                     <div className="profile-favorites">
                         <h3>Favorites</h3>
                         <ul>
-                            {profile.favorites.length ? favoriteArray() : (
-                                <p>This user has no favorites!</p>
-                            )}
+                            {favoriteArray()}
                         </ul>
                     </div>
 

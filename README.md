@@ -2,7 +2,7 @@
 - A messaging service that uses only Gifs 
 
 
-![jarpic](https://media-exp1.licdn.com/dms/image/C5603AQHGEeIrUVqSgQ/profile-displayphoto-shrink_200_200/0/1583288845201?e=1626307200&v=beta&t=XgeQvihKxTw3TATex2Qb9ZoSXC8-QfrX7k7Shu9qMwQ "jarrell")
+![jarpic](https://avatars.githubusercontent.com/u/33704616?s=400&u=5a0ca9e17cf93c3590dc5c228046b783df00f0d3&v=4)
 - Jarrell "[Jarrell28](https://github.com/Jarrell28)" Houston
 
 
